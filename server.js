@@ -5,11 +5,10 @@ const { Pool } = require("pg");
 const app = express();
 
 const pool = new Pool({
-  user: "u0_a331",
-  host: "localhost",
-  database: "backend_api",
-  password: "",
-  port: 5432,
+  connectionString: process.env.DATABASE_URL,
+  ssl: {
+    rejectUnauthorized: false
+  }
 });
 
 app.use(cors());
@@ -34,4 +33,3 @@ const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log(`Server ${PORT} portda ishga tushdi`);
 });
-
