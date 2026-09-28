@@ -1,9 +1,9 @@
-
 import { useEffect, useState } from 'react'
 import './App.css'
 
 function App() {
   const [message, setMessage] = useState('Backend tekshirilmoqda...')
+  const [students, setStudents] = useState(false)
 
   useEffect(() => {
     fetch('https://backend-api-3zw9.onrender.com/')
@@ -22,7 +22,16 @@ function App() {
         <p>{message}</p>
       </div>
 
-      <button>O‘quvchilar</button>
+      <button onClick={() => setStudents(true)}>
+        O‘quvchilar
+      </button>
+
+      {students && (
+        <div className="card">
+          <h2>O‘quvchilar ro‘yxati</h2>
+          <p>Hozircha o‘quvchilar yo‘q.</p>
+        </div>
+      )}
     </div>
   )
 }
