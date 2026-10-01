@@ -1,3 +1,8 @@
+Zo‘r 👍 Endi yangi kodni qo‘yamiz. Bu versiyada **✏️ Tahrirlash** va **🗑️ O‘chirish** tugmalari bo‘ladi.
+
+Nano ichiga quyidagi kodni **to‘liq qo‘ying**:
+
+```jsx
 import { useEffect, useState } from 'react'
 import './App.css'
 
@@ -9,6 +14,7 @@ function App() {
   const [name, setName] = useState('')
   const [phone, setPhone] = useState('')
   const [group, setGroup] = useState('')
+  const [editingId, setEditingId] = useState(null)
 
   const loadStudents = () => {
     fetch(`${API}/students`)
@@ -25,13 +31,19 @@ function App() {
     loadStudents()
   }, [])
 
-  const addStudent = (e) => {
+  const saveStudent = (e) => {
     e.preventDefault()
 
     if (!name) return
 
-    fetch(`${API}/students`, {
-      method: 'POST',
+    const url = editingId
+      ? `${API}/students/${editingId}`
+      : `${API}/students`
+
+    const method = editingId ? 'PUT' : 'POST'
+
+    fetch(url, {
+      method,
       headers: {
         'Content-Type': 'application/json'
       },
@@ -46,8 +58,25 @@ function App() {
         setName('')
         setPhone('')
         setGroup('')
+        setEditingId(null)
         loadStudents()
       })
+  }
+
+  const editStudent = (student) => {
+    setEditingId(student.id)
+    setName(student.name)
+    setPhone(student.phone || '')
+    setGroup(student.group_name || '')
+  }
+
+  const deleteStudent = (id) => {
+    if (!confirm("Bu o‘quvchini o‘chirasizmi?")) return
+
+    fetch(`${API}/students/${id}`, {
+      method: 'DELETE'
+    })
+      .then(() => loadStudents())
   }
 
   return (
@@ -61,9 +90,9 @@ function App() {
       </div>
 
       <div className="card">
-        <h2>Yangi o‘quvchi</h2>
+        <h2>{editingId ? 'O‘quvchini tahrirlash' : 'Yangi o‘quvchi'}</h2>
 
-        <form onSubmit={addStudent}>
+        <form onSubmit={saveStudent}>
           <input
             placeholder="Ism"
             value={name}
@@ -83,8 +112,22 @@ function App() {
           />
 
           <button type="submit">
-            O‘quvchi qo‘shish
+            {editingId ? 'Saqlash' : 'O‘quvchi qo‘shish'}
           </button>
+
+          {editingId && (
+            <button
+              type="button"
+              onClick={() => {
+                setEditingId(null)
+                setName('')
+                setPhone('')
+                setGroup('')
+              }}
+            >
+              Bekor qilish
+            </button>
+          )}
         </form>
       </div>
 
@@ -97,7 +140,19 @@ function App() {
           students.map(student => (
             <div key={student.id}>
               <b>{student.name}</b>
-              <p>{student.phone} — {student.group_name}</p>
+              <p>
+                {student.phone} — {student.group_name}
+              </p>
+
+              <button onClick={() => editStudent(student)}>
+                ✏️ Tahrirlash
+              </button>
+
+              <button onClick={() => deleteStudent(student.id)}>
+                🗑️ O‘chirish
+              </button>
+
+              <hr />
             </div>
           ))
         )}
@@ -107,3 +162,7 @@ function App() {
 }
 
 export default App
+```
+
+**Hozircha saqlamang.** Kodni qo‘yib bo‘lgach, **“qo‘ydim”** deb yozing.
+
