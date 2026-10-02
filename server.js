@@ -1,3 +1,4 @@
+```js
 const express = require("express");
 const cors = require("cors");
 const { Pool } = require("pg");
@@ -14,7 +15,6 @@ const pool = new Pool({
 app.use(cors());
 app.use(express.json());
 
-// Backend + PostgreSQL tekshirish
 app.get("/", async (req, res) => {
   try {
     await pool.query("SELECT NOW()");
@@ -23,13 +23,10 @@ app.get("/", async (req, res) => {
       database: "PostgreSQL ulandi!"
     });
   } catch (err) {
-    res.status(500).json({
-      error: err.message
-    });
+    res.status(500).json({ error: err.message });
   }
 });
 
-// O'quvchilar jadvalini yaratish
 async function createTable() {
   await pool.query(`
     CREATE TABLE IF NOT EXISTS students (
@@ -42,22 +39,17 @@ async function createTable() {
   `);
 }
 
-// O'quvchilarni olish
 app.get("/students", async (req, res) => {
   try {
     const result = await pool.query(
       "SELECT * FROM students ORDER BY id DESC"
     );
-
     res.json(result.rows);
   } catch (err) {
-    res.status(500).json({
-      error: err.message
-    });
+    res.status(500).json({ error: err.message });
   }
 });
 
-// Yangi o'quvchi qo'shish
 app.post("/students", async (req, res) => {
   try {
     const { name, phone, group_name } = req.body;
@@ -77,9 +69,53 @@ app.post("/students", async (req, res) => {
 
     res.status(201).json(result.rows[0]);
   } catch (err) {
-    res.status(500).json({
-      error: err.message
+    res.status(500).json({ error: err.message });
+  }
+});
+
+app.put("/students/:id", async (req, res) => {
+  try {
+    const { name, phone, group_name } = req.body;
+
+    const result = await pool.query(
+      `UPDATE students
+       SET name = $1, phone = $2, group_name = $3
+       WHERE id = $4
+       RETURNING *`,
+      [name, phone || "", group_name || "", req.params.id]
+    );
+
+    if (result.rows.length === 0) {
+      return res.status(404).json({
+        error: "O'quvchi topilmadi"
+      });
+    }
+
+    res.json(result.rows[0]);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+app.delete("/students/:id", async (req, res) => {
+  try {
+    const result = await pool.query(
+      "DELETE FROM students WHERE id = $1 RETURNING *",
+      [req.params.id]
+    );
+
+    if (result.rows.length === 0) {
+      return res.status(404).json({
+        error: "O'quvchi topilmadi"
+      });
+    }
+
+    res.json({
+      message: "O'quvchi o'chirildi",
+      student: result.rows[0]
     });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
   }
 });
 
@@ -94,4 +130,5 @@ createTable()
   .catch((err) => {
     console.error("Database xatosi:", err.message);
   });
+```
 
