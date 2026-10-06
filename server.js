@@ -1,4 +1,4 @@
-```js
+```
 const express = require("express");
 const cors = require("cors");
 const { Pool } = require("pg");
@@ -28,22 +28,14 @@ app.get("/", async (req, res) => {
 });
 
 async function createTable() {
-  await pool.query(`
-    CREATE TABLE IF NOT EXISTS students (
-      id SERIAL PRIMARY KEY,
-      name VARCHAR(100) NOT NULL,
-      phone VARCHAR(30),
-      group_name VARCHAR(100),
-      created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-    )
-  `);
+  await pool.query(
+    "CREATE TABLE IF NOT EXISTS students (id SERIAL PRIMARY KEY, name VARCHAR(100) NOT NULL, phone VARCHAR(30), group_name VARCHAR(100), created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP)"
+  );
 }
 
 app.get("/students", async (req, res) => {
   try {
-    const result = await pool.query(
-      "SELECT * FROM students ORDER BY id DESC"
-    );
+    const result = await pool.query("SELECT * FROM students ORDER BY id DESC");
     res.json(result.rows);
   } catch (err) {
     res.status(500).json({ error: err.message });
@@ -55,15 +47,11 @@ app.post("/students", async (req, res) => {
     const { name, phone, group_name } = req.body;
 
     if (!name) {
-      return res.status(400).json({
-        error: "Ism kiritilishi shart"
-      });
+      return res.status(400).json({ error: "Ism kiritilishi shart" });
     }
 
     const result = await pool.query(
-      `INSERT INTO students (name, phone, group_name)
-       VALUES ($1, $2, $3)
-       RETURNING *`,
+      "INSERT INTO students (name, phone, group_name) VALUES ($1, $2, $3) RETURNING *",
       [name, phone || "", group_name || ""]
     );
 
@@ -78,17 +66,12 @@ app.put("/students/:id", async (req, res) => {
     const { name, phone, group_name } = req.body;
 
     const result = await pool.query(
-      `UPDATE students
-       SET name = $1, phone = $2, group_name = $3
-       WHERE id = $4
-       RETURNING *`,
+      "UPDATE students SET name = $1, phone = $2, group_name = $3 WHERE id = $4 RETURNING *",
       [name, phone || "", group_name || "", req.params.id]
     );
 
     if (result.rows.length === 0) {
-      return res.status(404).json({
-        error: "O'quvchi topilmadi"
-      });
+      return res.status(404).json({ error: "O'quvchi topilmadi" });
     }
 
     res.json(result.rows[0]);
@@ -105,9 +88,7 @@ app.delete("/students/:id", async (req, res) => {
     );
 
     if (result.rows.length === 0) {
-      return res.status(404).json({
-        error: "O'quvchi topilmadi"
-      });
+      return res.status(404).json({ error: "O'quvchi topilmadi" });
     }
 
     res.json({
@@ -131,4 +112,3 @@ createTable()
     console.error("Database xatosi:", err.message);
   });
 ```
-
