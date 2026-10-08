@@ -25,9 +25,15 @@ app.get("/", async (req, res) => {
 });
 
 async function createTable() {
-  await pool.query(
-    "CREATE TABLE IF NOT EXISTS students (id SERIAL PRIMARY KEY, name VARCHAR(100) NOT NULL, phone VARCHAR(30), group_name VARCHAR(100), created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP)"
-  );
+  await pool.query(`
+    CREATE TABLE IF NOT EXISTS students (
+      id SERIAL PRIMARY KEY,
+      name VARCHAR(100) NOT NULL,
+      phone VARCHAR(30),
+      group_name VARCHAR(100),
+      created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    )
+  `);
 }
 
 app.get("/students", async (req, res) => {
@@ -53,7 +59,7 @@ app.post("/students", async (req, res) => {
 
     const result = await pool.query(
       "INSERT INTO students (name, phone, group_name) VALUES ($1, $2, $3) RETURNING *",
-      [name, phone  "", group_name  ""]
+      [name, phone || "", group_name || ""]
     );
 
     res.status(201).json(result.rows[0]);
@@ -66,9 +72,15 @@ app.put("/students/:id", async (req, res) => {
   try {
     const { name, phone, group_name } = req.body;
 
+    if (!name) {
+      return res.status(400).json({
+        error: "Ism kiritilishi shart"
+      });
+    }
+
     const result = await pool.query(
       "UPDATE students SET name = $1, phone = $2, group_name = $3 WHERE id = $4 RETURNING *",
-      [name, phone  "", group_name  "", req.params.id]
+      [name, phone || "", group_name || "", req.params.id]
     );
 
     if (result.rows.length === 0) {
