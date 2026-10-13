@@ -4,7 +4,7 @@ A REST API for managing students in an educational center.
 
 Features
 Create a new student
-Get the list of students
+Get all students
 Update student information
 Delete a student
 Store student data in PostgreSQL
@@ -30,6 +30,6 @@ name
 phone
 group_name
 created_at
-Author
+Project Purpose
 
-Backend development portfolio project.
+This project demonstrates backend development skills using Node.js, Express.js, PostgreSQL, and REST APIs.
