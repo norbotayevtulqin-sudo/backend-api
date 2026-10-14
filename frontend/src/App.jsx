@@ -5,6 +5,7 @@ const API = "https://backend-api-3zw9.onrender.com";
 
 function App() {
   const [students, setStudents] = useState([]);
+  const [search, setSearch] = useState("");
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
   const [group, setGroup] = useState("");
@@ -113,7 +114,17 @@ function App() {
       <div className="card">
         <h2>O'quvchilar ro'yxati</h2>
 
-        {students.map((student) => (
+        {students
+        
+        .filter((student) =>
+    student.name.toLowerCase().includes(search.toLowerCase())
+  )
+  .map((student) => (
+          
+          
+     
+        
+
           <div key={student.id}>
             <b>{student.name}</b>
             <p>
