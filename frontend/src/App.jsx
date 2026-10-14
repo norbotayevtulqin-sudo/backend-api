@@ -113,6 +113,12 @@ function App() {
 
       <div className="card">
         <h2>O'quvchilar ro'yxati</h2>
+        
+         <input
+  placeholder="O‘quvchini ism bo‘yicha qidirish..."
+  value={search}
+  onChange={(e) => setSearch(e.target.value)}
+/>
 
         {students
         
