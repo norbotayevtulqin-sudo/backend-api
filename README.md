@@ -1,35 +1,41 @@
-Student Management System
+Система управления учениками
 
-A REST API for managing students in an educational center.
+REST API для управления учениками учебного центра.
 
-Features
-Create a new student
-Get all students
-Update student information
-Delete a student
-Store student data in PostgreSQL
-Technologies
+Возможности
+Получение списка учеников
+Добавление нового ученика
+Редактирование данных ученика
+Удаление ученика
+Хранение данных в PostgreSQL
+Поиск учеников по имени в интерфейсе
+Технологии
 Node.js
 Express.js
 PostgreSQL
+React
 REST API
-Git and GitHub
+Git и GitHub
+Структура данных
+
+Данные ученика включают:
+
+id — идентификатор
+name — имя ученика
+phone — номер телефона
+group_name — название группы
+created_at — дата создания записи
 API Endpoints
-Method	Endpoint	Description
-GET	/	Check API and database connection
-GET	/students	Get all students
-POST	/students	Create a student
-PUT	/students/:id	Update a student
-DELETE	/students/:id	Delete a student
-Database
+Метод	Endpoint	Описание
+GET	/	Проверка работы API
+GET	/students	Получение списка учеников
+POST	/students	Добавление ученика
+PUT	/students/:id	Обновление данных
+DELETE	/students/:id	Удаление ученика
+Цель проекта
 
-Student records include:
+Проект создан для практического изучения backend-разработки с использованием Node.js, Express.js, PostgreSQL и REST API. Реализованы основные CRUD-операции: создание, чтение, обновление и удаление данных.
 
-id
-name
-phone
-group_name
-created_at
-Project Purpose
+GitHub
 
-This project demonstrates backend development skills using Node.js, Express.js, PostgreSQL, and REST APIs.
+https://github.com/norbotayevtulqin-sudo/backend-api
